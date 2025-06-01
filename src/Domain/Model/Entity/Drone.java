@@ -1,74 +1,31 @@
 package Domain.Model.Entity;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Drone {
 
-    private static int count = 0;
-    private static int groupCount = 0;
-    private static String posicoes;
-    private int id;
-    private int groupId;
+    private double pressao;
+    private double radiacao;
+    private double temperatura;
+    private double umidade;
+    private double latitude;
+    private double longitude;
     private String posicao;
-    private int pressao;
-    private int radiacao;
-    private int temperatura;
-    private int umidade;
+    private String dataCriacao;
 
-    public Drone(int pressao, int radiacao, int temperatura, int umidade) {
-        setId(getCount());
-        setGroupId(getGroupCount());
-        setPosicao(getPosicoes());
+
+    public Drone(double pressao, double radiacao, double temperatura, double umidade, double latitude, double longitude, String posicao) {
         setPressao(pressao);
         setRadiacao(radiacao);
         setTemperatura(temperatura);
         setUmidade(umidade);
-    }
+        setLatitude(latitude);
+        setLongitude(longitude);
+        setPosicao(posicao);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        setDataCriacao(LocalDateTime.now().format(formatter));
 
-    public int getCount() {
-        count++;
-        if (count > 4) {
-            count = 1;
-        }
-        return count;
-    }
-
-    public int getGroupCount() {
-        if (getId() == 1) {
-            groupCount++;
-        }
-        return groupCount;
-    }
-
-    public String getPosicoes() {
-
-        if (getId() == 1) {
-            posicoes = "Norte";
-        } else if (getId() == 2) {
-            posicoes = "Sul";
-        } else if (getId() == 3) {
-            posicoes = "Leste";
-        } else if (getId() == 4) {
-            posicoes = "Oeste";
-        } else {
-            posicoes = "Indefinida";
-        }
-
-        return posicoes;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
     }
 
     public String getPosicao() {
@@ -79,53 +36,73 @@ public class Drone {
         this.posicao = posicao;
     }
 
-    public int getPressao() {
+    public double getPressao() {
         return pressao;
     }
 
-    public void setPressao(int pressao) {
+    public void setPressao(double pressao) {
         this.pressao = pressao;
     }
 
-    public int getRadiacao() {
+    public double getRadiacao() {
         return radiacao;
     }
 
-    public void setRadiacao(int radiacao) {
+    public void setRadiacao(double radiacao) {
         this.radiacao = radiacao;
     }
 
-    public int getTemperatura() {
+    public double getTemperatura() {
         return temperatura;
     }
 
-    public void setTemperatura(int temperatura) {
+    public void setTemperatura(double temperatura) {
         this.temperatura = temperatura;
     }
 
-    public int getUmidade() {
+    public double getUmidade() {
         return umidade;
     }
 
-    public void setUmidade(int umidade) {
+    public void setUmidade(double umidade) {
         this.umidade = umidade;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(String dataCriacao) {
+        this.dataCriacao = dataCriacao;
     }
 
     @Override
     public String toString() {
-
-        if (getId() == 1) {
-            return getPressao() + "-" + getRadiacao() + "-" + getTemperatura() + "-" + getUmidade();
-        } else if (getId() == 2) {
-            return getPressao() + ";" + getRadiacao() + ";" + getTemperatura() + ";" + getUmidade();
-        } else if (getId() == 3) {
-            return getPressao() + "," + getRadiacao() + "," + getTemperatura() + "," + getUmidade();
-        } else if (getId() == 4) {
-            return getPressao() + "#" + getRadiacao() + "#" + getTemperatura() + "#" + getUmidade();
-        } else {
-            return "Indefinido";
-        }
-
+        return "Drone{" +
+                "pressao=" + pressao +
+                ", radiacao=" + radiacao +
+                ", temperatura=" + temperatura +
+                ", umidade=" + umidade +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", posicao='" + posicao + '\'' +
+                ", dataCriacao='" + dataCriacao + '\'' +
+                '}';
     }
-
 }
