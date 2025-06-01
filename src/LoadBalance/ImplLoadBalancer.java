@@ -13,8 +13,8 @@ public class ImplLoadBalancer implements Runnable {
     // Campos conforme seu construtor
     private MulticastSocket multiSocket;
     private InetAddress multicastIP;
-    private InetSocketAddress grupo;
-    private NetworkInterface interfaceRede;
+    private InetSocketAddress grupo ;
+    private NetworkInterface interfaceRede = NetworkInterface.getByName("ai ai ai ui ui");
     private final int porta;
     private boolean rodando = true;
 

@@ -16,7 +16,7 @@ public class ReceptorMultiCast {
         MulticastSocket ms = new MulticastSocket(porta);
         InetAddress multicastIP = InetAddress.getByName("224.0.0.1");
         InetSocketAddress grupo = new InetSocketAddress(multicastIP, porta);
-        NetworkInterface interfaceRede = NetworkInterface.getByName("wlo1");
+        NetworkInterface interfaceRede = NetworkInterface.getByName("ethernet_32769");
 
         ms.joinGroup(grupo, interfaceRede);
 
