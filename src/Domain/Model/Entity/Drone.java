@@ -12,7 +12,7 @@ public class Drone {
     private double latitude;
     private double longitude;
     private String posicao;
-    private String dataCriacao;
+    private LocalDateTime dataCriacao;
 
 
     public Drone(double pressao, double radiacao, double temperatura, double umidade, double latitude, double longitude, String posicao) {
@@ -24,7 +24,7 @@ public class Drone {
         setLongitude(longitude);
         setPosicao(posicao);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        setDataCriacao(LocalDateTime.now().format(formatter));
+        setDataCriacao(LocalDateTime.parse(formatter.format(LocalDateTime.now()), formatter));
 
     }
 
@@ -84,11 +84,11 @@ public class Drone {
         this.longitude = longitude;
     }
 
-    public String getDataCriacao() {
+    public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(String dataCriacao) {
+    public void setDataCriacao(LocalDateTime dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 

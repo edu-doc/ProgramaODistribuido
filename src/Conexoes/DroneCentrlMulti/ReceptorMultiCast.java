@@ -28,7 +28,7 @@ public class ReceptorMultiCast {
         while (!mensagem.equals("sair")) {
             ms.receive(pacote);
             mensagem = new String(pacote.getData(), 0, pacote.getLength());
-            System.out.println(formatarMensagem(mensagem));
+            formatarMensagem(mensagem);
 
         }
 
@@ -36,17 +36,19 @@ public class ReceptorMultiCast {
         ms.close();
     }
 
-    public static List<Double> formatarMensagem(String mensagem) {
+    static CentralService centralService = new CentralService();
+    static DroneDTO droneDTO;
+    static List<Double> numeros;
+
+    public static void formatarMensagem(String mensagem) {
         String separador = detectarSeparador(mensagem);
 
         if (separador == null) {
             System.out.println("Separador desconhecido.");
-            return new ArrayList<>();
         }
 
         String[] partes = mensagem.split(java.util.regex.Pattern.quote(separador));
-        List<Double> numeros = new ArrayList<>();
-
+        numeros = new ArrayList<>();
         for (String parte : partes) {
             try {
                 numeros.add(Double.parseDouble(parte.trim()));
@@ -57,24 +59,37 @@ public class ReceptorMultiCast {
 
         // Aqui você pode executar ações diferentes com base no separador detectado
         switch (separador) {
+
             case "-":
-                CentralService centralService = new CentralService();
-                DroneDTO droneDTO = new DroneDTO(numeros.get(0), numeros.get(1), numeros.get(2), numeros.get(3), numeros.get(4), numeros.get(5), "Norte");
+                droneDTO = new DroneDTO(numeros.get(0), numeros.get(1), numeros.get(2), numeros.get(3), numeros.get(4), numeros.get(5), "Norte");
                 centralService.createDrone(droneDTO);
+                numeros.clear();
                 System.out.println("Mensagem do drone do Norte");
                 break;
             case ";":
+                droneDTO = new DroneDTO(numeros.get(0), numeros.get(1), numeros.get(2), numeros.get(3), numeros.get(4), numeros.get(5), "Sul");
+                centralService.createDrone(droneDTO);
+                numeros.clear();
                 System.out.println("Mensagem do drone do Sul");
                 break;
             case "#":
+                droneDTO = new DroneDTO(numeros.get(0), numeros.get(1), numeros.get(2), numeros.get(3), numeros.get(4), numeros.get(5), "Oeste");
+                centralService.createDrone(droneDTO);
+                numeros.clear();
                 System.out.println("Mensagem do drone do Oeste");
                 break;
             case ",":
+                droneDTO = new DroneDTO(numeros.get(0), numeros.get(1), numeros.get(2), numeros.get(3), numeros.get(4), numeros.get(5), "Leste");
+                centralService.createDrone(droneDTO);
+                numeros.clear();
                 System.out.println("Mensagem do drone do Leste");
+                break;
+
+            default:
+                System.out.println("Separador desconhecido: " + separador);
                 break;
         }
 
-        return numeros;
     }
 
     private static String detectarSeparador(String mensagem) {

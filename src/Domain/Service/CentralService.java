@@ -12,8 +12,5 @@ public class CentralService {
         System.out.println(drone);
     }
 
-    public Drone getDrone() {
-        return drone;
-    }
 
 }
