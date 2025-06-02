@@ -29,7 +29,7 @@ public class ImplLoadBalancer implements Runnable {
             grupo = new InetSocketAddress(multicastIP, this.porta);
 
 
-            interfaceRede = NetworkInterface.getByName("ethernet_32769");
+            interfaceRede = NetworkInterface.getByName("wireless_32768");
             if (interfaceRede == null) {
                 throw new IOException("A interface de rede 'Ethernet 2' não foi encontrada.");
             }
