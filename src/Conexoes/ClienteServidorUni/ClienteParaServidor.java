@@ -1,10 +1,8 @@
 package Conexoes.ClienteServidorUni;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.util.List;
 
 public class ClienteParaServidor {
     private static final String SERVER_ADDRESS = "localhost";
@@ -30,22 +28,27 @@ public class ClienteParaServidor {
 
             try (
                     Socket novoSocket = new Socket(SERVER_ADDRESS, novaPorta);
-                    BufferedReader novoIn = new BufferedReader(new InputStreamReader(novoSocket.getInputStream()));
-                    PrintWriter novoOut = new PrintWriter(novoSocket.getOutputStream(), true)
+                    ObjectOutputStream objOut = new ObjectOutputStream(novoSocket.getOutputStream());
+                    ObjectInputStream objIn = new ObjectInputStream(novoSocket.getInputStream());
             ) {
+                novoSocket.setSoTimeout(TIMEOUT);
                 System.out.println("Redirecionado para o servidor na porta " + novaPorta);
 
-                novoOut.println("Cliente");
+                objOut.writeUTF("Cliente");
+                objOut.flush();
 
-                String entrada;
-                while ((entrada = console.readLine()) != null) {
-                    novoOut.println(entrada);
-                    System.out.println("Resposta do servidor: " + novoIn.readLine());
+                Object resposta = objIn.readObject();
+                if (resposta instanceof List<?> lista) {
+                    System.out.println("Lista de drones recebida:");
+                    for (Object o : lista) {
+                        System.out.println(o); // Drone precisa ter toString() bem definido
+                    }
                 }
-
             } catch (IOException e) {
                 System.out.println("Erro ao conectar na nova porta: " + e.getMessage());
                 e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
             }
 
         } catch (IOException e) {

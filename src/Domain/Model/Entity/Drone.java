@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 
 public class Drone implements Serializable {
 
+    private static int count = 0;
+    private int id;
     private double pressao;
     private double radiacao;
     private double temperatura;
@@ -17,6 +19,7 @@ public class Drone implements Serializable {
 
 
     public Drone(double pressao, double radiacao, double temperatura, double umidade, double latitude, double longitude, String posicao) {
+        setId(getNextId());
         setPressao(pressao);
         setRadiacao(radiacao);
         setTemperatura(temperatura);
@@ -27,6 +30,17 @@ public class Drone implements Serializable {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         setDataCriacao(LocalDateTime.parse(formatter.format(LocalDateTime.now()), formatter));
 
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getNextId() {
+        return ++count;
     }
 
     public String getPosicao() {

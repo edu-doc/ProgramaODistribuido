@@ -29,18 +29,14 @@ public class CentralParaServidor {
 
             try (
                     Socket novoSocket = new Socket(SERVER_ADDRESS, novaPorta);
-                    BufferedReader novoIn = new BufferedReader(new InputStreamReader(novoSocket.getInputStream()));
-                    PrintWriter novoOut = new PrintWriter(novoSocket.getOutputStream(), true)
+                    ObjectOutputStream objOut = new ObjectOutputStream(novoSocket.getOutputStream());
+                    ObjectInputStream objIn = new ObjectInputStream(novoSocket.getInputStream());
             ) {
                 System.out.println("Redirecionado para o servidor na porta " + novaPorta);
 
-                novoOut.println("Central");
-
-                ObjectOutputStream objOut = new ObjectOutputStream(socket.getOutputStream());
+                objOut.writeUTF("Central");
                 objOut.writeObject(drone);
                 objOut.flush();
-
-                System.out.println("Drone enviado para o servidor");
 
             } catch (IOException e) {
                 System.out.println("Erro ao conectar na nova porta: " + e.getMessage());
