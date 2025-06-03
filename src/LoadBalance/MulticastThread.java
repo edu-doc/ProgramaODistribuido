@@ -11,7 +11,7 @@ public class MulticastThread implements Runnable {
     private final MulticastSocket multiSocket;
     private final InetAddress multicastIP = InetAddress.getByName("224.0.0.10");
     private final InetSocketAddress grupo;
-    private final NetworkInterface interfaceRede = NetworkInterface.getByName("wireless_32768");
+    private final NetworkInterface interfaceRede = NetworkInterface.getByName("wlo1");
     private final int porta = 55560;
 
     private volatile boolean rodando = true;
@@ -57,6 +57,7 @@ public class MulticastThread implements Runnable {
                     String serverId = parts[0];
                     try {
                         int quantidadeConexoes = Integer.parseInt(parts[1]);
+                        System.out.println("[Multicast] Recebido: " + message);
                         atualizarContagemServidor(serverId, quantidadeConexoes);
                     } catch (NumberFormatException e) {
                         System.err.println("Thread de Balanceamento: Número inválido de conexões: '" + parts[1] + "'");

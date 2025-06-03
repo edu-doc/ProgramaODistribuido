@@ -23,15 +23,24 @@ public class UnicastThread implements Runnable {
                 return;
             }
 
-            // Encontra o servidor com menos conexões
-            ServerInfo melhorServidor = servidores
-                    .stream()
-                    .min((a, b) -> Integer.compare(a.getConexoesAtivas(), b.getConexoesAtivas()))
-                    .orElse(null);
+            ServerInfo servidorEscolhido = null;
+            int minConexoes = Integer.MAX_VALUE; // Maior valor possivel dos inteiros, usado em comparação
 
-            if (melhorServidor != null) {
-                out.println(melhorServidor.getPorta());
-                System.out.println("[Unicast] Cliente redirecionado para porta: " + melhorServidor.getPorta());
+            for (ServerInfo servidorCandidato : servidores) {
+                if (servidorCandidato.getConexoesAtivas() < minConexoes) {
+                    minConexoes = servidorCandidato.getConexoesAtivas();
+                    servidorEscolhido = servidorCandidato;
+                }
+            }
+
+            if (servidorEscolhido == null && !servidores.isEmpty()) {
+                servidorEscolhido = servidores.get(0);
+            }
+
+
+            if (servidorEscolhido != null) {
+                out.println(servidorEscolhido.getPorta());
+                System.out.println("[Unicast] Cliente redirecionado para porta: " + servidorEscolhido.getPorta());
             } else {
                 out.println("Erro ao encontrar servidor.");
             }
