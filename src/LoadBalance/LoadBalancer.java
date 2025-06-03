@@ -1,0 +1,46 @@
+package LoadBalance;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+public class LoadBalancer {
+
+    static ServerSocket socketServidor;
+    static int PORTA = 22234;
+
+    public static void main(String[] args) throws IOException {
+        CopyOnWriteArrayList<ServerInfo> servidores = new CopyOnWriteArrayList<>();
+
+        ServerInfo srvInfo1 = new ServerInfo("S1", "10.0.0.1", 8080);
+        ServerInfo srvInfo2 = new ServerInfo("S2", "10.0.0.2", 8081);
+
+        servidores.add(srvInfo1);
+        servidores.add(srvInfo2);
+
+        Thread multicastThread = new Thread(new MulticastThread(servidores));
+        // Thread unicastThread = new Thread(new UnicastThread(servidores));
+
+        multicastThread.start();
+        // unicastThread.start();
+
+        socketServidor = new ServerSocket(PORTA);
+
+        System.out.println("Servidor rodando na porta " +
+                socketServidor.getLocalPort());
+        System.out.println("HostAddress = " +
+                InetAddress.getLocalHost().getHostAddress());
+        System.out.println("HostName = " +
+                InetAddress.getLocalHost().getHostName());
+
+        while (true) {
+            Socket clientSocket = socketServidor.accept();
+            System.out.println("[Unicast] Novo cliente conectado: " + clientSocket.getInetAddress());
+
+            Thread unicastThread = new Thread(new UnicastThread(clientSocket, servidores));
+            unicastThread.start();
+        }
+    }
+}
