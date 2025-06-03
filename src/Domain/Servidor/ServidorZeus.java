@@ -7,36 +7,40 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ServidorZeus {
-
     private static final int PORT = 12345;
     private static final int MAX_THREADS = 10;
+    private static final int TIMEOUT = 30000; // 30 segundos
 
     public static void main(String[] args) {
-
-        // Inicia o serviço de multicast
+        // Inicia multicast
         try {
             ImplServidor implServidor = new ImplServidor("S1", "224.0.0.10", 55560);
             Thread multicastThread = new Thread(implServidor);
             multicastThread.start();
-            System.out.println("Thread multicast iniciada.");
+            System.out.println("Serviço multicast iniciado.");
         } catch (Exception e) {
-            System.err.println("Erro ao iniciar multicast: " + e.getMessage());
+            System.err.println("Erro no multicast: " + e.getMessage());
         }
 
-        // Inicia o servidor TCP com pool de threads
+        // Configura pool de threads
         ExecutorService pool = Executors.newFixedThreadPool(MAX_THREADS);
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            serverSocket.setSoTimeout(TIMEOUT);
             System.out.println("Servidor TCP iniciado na porta " + PORT);
 
-            while (true) {
-                Socket socketCliente = serverSocket.accept();
-                System.out.println("Cliente conectado: " + socketCliente.getInetAddress());
-                pool.execute(new ImplCliente(socketCliente));
+            while (!Thread.interrupted()) {
+                try {
+                    Socket socketCliente = serverSocket.accept();
+                    socketCliente.setSoTimeout(TIMEOUT);
+                    System.out.println("Novo cliente: " + socketCliente.getInetAddress());
+                    pool.execute(new ImplCliente(socketCliente));
+                } catch (IOException e) {
+                    System.err.println("Erro ao aceitar conexão: " + e.getMessage());
+                }
             }
-
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Erro no servidor: " + e.getMessage());
         } finally {
             pool.shutdown();
         }

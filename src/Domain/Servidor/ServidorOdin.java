@@ -15,7 +15,7 @@ public class ServidorOdin {
 
         // Inicia o serviço de multicast
         try {
-            ImplServidor implServidor = new ImplServidor("S1", "224.0.0.10", 55560);
+            ImplServidor implServidor = new ImplServidor("S2", "224.0.0.10", 55560);
             Thread multicastThread = new Thread(implServidor);
             multicastThread.start();
             System.out.println("Thread multicast iniciada.");
