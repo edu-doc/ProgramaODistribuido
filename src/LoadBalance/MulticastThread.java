@@ -11,7 +11,7 @@ public class MulticastThread implements Runnable {
     private final MulticastSocket multiSocket;
     private final InetAddress multicastIP = InetAddress.getByName("224.0.0.10");
     private final InetSocketAddress grupo;
-    private final NetworkInterface interfaceRede = NetworkInterface.getByName("wlo1");
+    private final NetworkInterface interfaceRede = NetworkInterface.getByName("wireless_32768");
     private final int porta = 55560;
 
     private volatile boolean rodando = true;

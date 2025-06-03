@@ -32,7 +32,7 @@ public class ServidorOdin {
             while (true) {
                 Socket socketCliente = serverSocket.accept();
                 System.out.println("Cliente conectado: " + socketCliente.getInetAddress());
-                pool.execute(new ImplCliente(socketCliente));
+                pool.execute(new ImplServidorCliente(socketCliente));
             }
 
         } catch (IOException e) {

@@ -1,9 +1,10 @@
 package Domain.Model.Entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Drone {
+public class Drone implements Serializable {
 
     private double pressao;
     private double radiacao;

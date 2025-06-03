@@ -1,16 +1,15 @@
 package Domain.Servidor;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import Domain.Model.Entity.Drone;
+
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-public class ImplCliente implements Runnable {
+public class ImplServidorCliente implements Runnable {
     private final Socket socketCliente;
 
-    public ImplCliente(Socket socket) {
+    public ImplServidorCliente(Socket socket) {
         this.socketCliente = socket;
     }
 
@@ -18,19 +17,30 @@ public class ImplCliente implements Runnable {
     public void run() {
         try (BufferedReader in = new BufferedReader(
                 new InputStreamReader(socketCliente.getInputStream()));
+             ObjectInputStream objIn = new ObjectInputStream(socketCliente.getInputStream());
              PrintWriter out = new PrintWriter(
                      socketCliente.getOutputStream(), true)) {
 
+            socketCliente.setSoTimeout(5000);
+
             // Lê identificação do cliente
             String clienteId = in.readLine();
-            out.println("Cliente identificado: " + clienteId);
+            System.out.println("Cliente identificado: " + clienteId);
 
+            if (clienteId.equals("Central")){
+                Drone recebido = (Drone) objIn.readObject();
+                System.out.println("Drone recebido: " + recebido);
+            }
+
+            out.println("Bem vindo cliente");
 
 
         } catch (SocketTimeoutException e) {
             System.err.println("Timeout com cliente: " + socketCliente.getInetAddress());
         } catch (IOException e) {
             System.err.println("Erro com cliente: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            System.err.println("Drone não encontrado: " + e.getMessage());
         } finally {
             try {
                 socketCliente.close();

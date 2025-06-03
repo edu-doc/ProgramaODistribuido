@@ -1,16 +1,17 @@
-package Conexoes.CentralServidorUni;
+package Conexoes.ClienteServidorUni;
 
-import Domain.Model.Entity.Drone;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
-public class CentralParaServidor {
+public class ClienteParaServidor {
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 22234;
     private static final int TIMEOUT = 5000;
 
-    public void conexaoCentralServidor(Drone drone) {
+    public void conexaoCentralServidor() {
         try (
                 Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -19,7 +20,7 @@ public class CentralParaServidor {
         ) {
             socket.setSoTimeout(TIMEOUT);
 
-            System.out.println("Conectando com Load Balancer na porta " + SERVER_PORT);
+            System.out.println("Conectando ao Load Balancer na porta " + SERVER_PORT);
 
             String porta = in.readLine();
 
@@ -34,13 +35,13 @@ public class CentralParaServidor {
             ) {
                 System.out.println("Redirecionado para o servidor na porta " + novaPorta);
 
-                novoOut.println("Central");
+                novoOut.println("Cliente");
 
-                ObjectOutputStream objOut = new ObjectOutputStream(socket.getOutputStream());
-                objOut.writeObject(drone);
-                objOut.flush();
-
-                System.out.println("Drone enviado para o servidor");
+                String entrada;
+                while ((entrada = console.readLine()) != null) {
+                    novoOut.println(entrada);
+                    System.out.println("Resposta do servidor: " + novoIn.readLine());
+                }
 
             } catch (IOException e) {
                 System.out.println("Erro ao conectar na nova porta: " + e.getMessage());
@@ -53,4 +54,8 @@ public class CentralParaServidor {
         }
     }
 
+    public static void main(String[] args) {
+        new ClienteParaServidor().conexaoCentralServidor();
+    }
 }
+

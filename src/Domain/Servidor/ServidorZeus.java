@@ -26,15 +26,13 @@ public class ServidorZeus {
         ExecutorService pool = Executors.newFixedThreadPool(MAX_THREADS);
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            serverSocket.setSoTimeout(TIMEOUT);
             System.out.println("Servidor TCP iniciado na porta " + PORT);
 
             while (!Thread.interrupted()) {
                 try {
                     Socket socketCliente = serverSocket.accept();
-                    socketCliente.setSoTimeout(TIMEOUT);
                     System.out.println("Novo cliente: " + socketCliente.getInetAddress());
-                    pool.execute(new ImplCliente(socketCliente));
+                    pool.execute(new ImplServidorCliente(socketCliente));
                 } catch (IOException e) {
                     System.err.println("Erro ao aceitar conexão: " + e.getMessage());
                 }
