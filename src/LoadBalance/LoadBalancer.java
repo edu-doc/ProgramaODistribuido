@@ -14,17 +14,15 @@ public class LoadBalancer {
     public static void main(String[] args) throws IOException {
         CopyOnWriteArrayList<ServerInfo> servidores = new CopyOnWriteArrayList<>();
 
-        ServerInfo srvInfo1 = new ServerInfo("S1", "10.0.0.1", 8080);
-        ServerInfo srvInfo2 = new ServerInfo("S2", "10.0.0.2", 8081);
+        ServerInfo srvInfo1 = new ServerInfo("S1", "10.0.0.1", 12345);
+        ServerInfo srvInfo2 = new ServerInfo("S2", "10.0.0.2", 54321);
 
         servidores.add(srvInfo1);
         servidores.add(srvInfo2);
 
         Thread multicastThread = new Thread(new MulticastThread(servidores));
-        // Thread unicastThread = new Thread(new UnicastThread(servidores));
 
         multicastThread.start();
-        // unicastThread.start();
 
         socketServidor = new ServerSocket(PORTA);
 

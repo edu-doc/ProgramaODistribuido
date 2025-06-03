@@ -2,23 +2,22 @@ package LoadBalance;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class MulticastThread implements Runnable{
+public class MulticastThread implements Runnable {
 
-    private CopyOnWriteArrayList<ServerInfo> servidores;
+    private final CopyOnWriteArrayList<ServerInfo> servidores;
 
-    private MulticastSocket multiSocket;
-    private InetAddress multicastIP = InetAddress.getByName("224.0.0.10") ;
-    private InetSocketAddress grupo ;
-    private NetworkInterface interfaceRede = NetworkInterface.getByName("ethernet_32776");
+    private final MulticastSocket multiSocket;
+    private final InetAddress multicastIP = InetAddress.getByName("224.0.0.10");
+    private final InetSocketAddress grupo;
+    private final NetworkInterface interfaceRede = NetworkInterface.getByName("wireless_32768");
     private final int porta = 55560;
 
-    private boolean rodando = true;
+    private volatile boolean rodando = true;
 
     public MulticastThread(CopyOnWriteArrayList<ServerInfo> servidores) throws IOException {
-        this.servidores = servidores; // ArrayList Thread Safe
+        this.servidores = servidores;
 
         multiSocket = new MulticastSocket(this.porta);
 
@@ -26,7 +25,6 @@ public class MulticastThread implements Runnable{
                 InetAddress.getLocalHost() +
                 " executando na porta " +
                 multiSocket.getLocalPort());
-
 
         grupo = new InetSocketAddress(this.multicastIP, this.porta);
 
@@ -38,59 +36,64 @@ public class MulticastThread implements Runnable{
                 " na porta " + this.porta + " interface: " + interfaceRede.getDisplayName() + ".");
 
         multiSocket.joinGroup(grupo, interfaceRede);
-
     }
 
     @Override
     public void run() {
-        System.out.println("Balanceador de Carga: Thread do listener interno iniciada. Escutando em " +
+        System.out.println("Balanceador de Carga: Listener multicast iniciado em " +
                 this.multicastIP.getHostAddress() + ":" + this.multiSocket.getLocalPort());
 
         byte[] buffer = new byte[1024];
 
-        while (this.rodando) {
+        while (rodando) {
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
             try {
-                this.multiSocket.receive(packet);
+                multiSocket.receive(packet);
+                String message = new String(packet.getData(), 0, packet.getLength()).trim();
+
+                String[] parts = message.split(":", 2);
+                if (parts.length == 2) {
+                    String serverId = parts[0];
+                    try {
+                        int quantidadeConexoes = Integer.parseInt(parts[1]);
+                        atualizarContagemServidor(serverId, quantidadeConexoes);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Thread de Balanceamento: Número inválido de conexões: '" + parts[1] + "'");
+                    }
+                } else {
+                    System.err.println("Thread de Balanceamento: Formato inválido: '" + message + "'. Esperado 'ID:Contagem'.");
+                }
+
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                if (rodando) {
+                    System.err.println("Erro ao receber pacote multicast: " + e.getMessage());
+                }
             }
-            String message = new String(packet.getData(), 0, packet.getLength()).trim();
-
-            String[] parts = message.split(":", 2);
-            if (parts.length == 2) {
-                String serverId = parts[0];
-                int quantidadeConexoes = Integer.parseInt(parts[1]);
-                this.atualizarContagemServidor(serverId, quantidadeConexoes);
-            } else {
-                System.err.println("Thread de Balanceamento: Formato de mensagem multicast inválido: '" + message + "'. Esperado 'ID:Contagem'.");
-            }
-
         }
 
         try {
-            this.multiSocket.leaveGroup(this.grupo, this.interfaceRede);
+            multiSocket.leaveGroup(grupo, interfaceRede);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("Erro ao sair do grupo multicast: " + e.getMessage());
         }
 
-        this.multiSocket.close();
-
-        System.out.println("Thread de Balanceamento: Thread do Balanceamento encerrada.");
+        multiSocket.close();
+        System.out.println("Thread de Balanceamento: Encerrada.");
     }
 
     protected void atualizarContagemServidor(String serverId, int novaContagem) {
-        if (serverId == null) {
-            System.err.println("Thread de Balanceamento: Recebida atualização com serverId nulo. Ignorando.");
-            return;
-        }
+        boolean encontrado = false;
         for (ServerInfo server : servidores) {
             if (server.getId().equals(serverId)) {
                 server.setConexoesAtivas(novaContagem);
-                return;
+                System.out.println("[Multicast] Atualizado " + serverId + " -> " + novaContagem + " conexões.");
+                encontrado = true;
+                break;
             }
         }
-
+        if (!encontrado) {
+            System.err.println("[Multicast] Servidor com ID '" + serverId + "' não encontrado na lista.");
+        }
     }
 }

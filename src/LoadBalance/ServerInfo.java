@@ -7,13 +7,12 @@ public class ServerInfo {
     private final String id;
     private final String host;
     private final int porta;
-    private AtomicInteger conexoesAtivas;
+    private final AtomicInteger conexoesAtivas = new AtomicInteger(0); // Inicializado diretamente
 
     public ServerInfo(String id, String host, int porta) {
         this.id = id;
         this.host = host;
         this.porta = porta;
-        this.conexoesAtivas = new AtomicInteger(0); // Inicia com 0
     }
 
     public String getId() {
@@ -34,10 +33,10 @@ public class ServerInfo {
 
     public void setConexoesAtivas(int count) {
         if (count >= 0) {
-            this.conexoesAtivas.set(count);
+            conexoesAtivas.set(count);
         } else {
             System.err.println("Tentativa de definir contagem de conexões negativa para " + id + ": " + count + ". Definindo para 0.");
-            this.conexoesAtivas.set(0);
+            conexoesAtivas.set(0);
         }
     }
 
@@ -45,10 +44,10 @@ public class ServerInfo {
         conexoesAtivas.incrementAndGet();
     }
 
-    public void decrementarConexoes() { // Exemplo
-        conexoesAtivas.getAndUpdate(current -> current > 0 ? current - 1 : 0);
+    public void decrementarConexoes() {
+        // Garante que não fique negativo
+        conexoesAtivas.getAndUpdate(current -> Math.max(0, current - 1));
     }
-
 
     @Override
     public String toString() {
@@ -63,13 +62,13 @@ public class ServerInfo {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ServerInfo)) return false;
         ServerInfo that = (ServerInfo) o;
-        return id.equals(that.id);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Objects.hash(id);
     }
 }

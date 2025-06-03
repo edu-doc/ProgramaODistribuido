@@ -14,7 +14,7 @@ class ImplServidor implements Runnable {
     private DatagramSocket emisorSocket; // Socket para enviar
     private String grupo;
 
-    private int conexoesAtivas = 0;
+    private static int conexoesAtivas = 0;
     private boolean rodando = true;
 
 

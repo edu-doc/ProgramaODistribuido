@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class clienteTeste {
     public static void main(String[] args) {
-        String servidor = "10.0.0.148"; // ou IP do servidor
+        String servidor = "localhost"; // ou IP do servidor
         int porta = 22234; // porta do servidor unicast
 
         try (Socket socket = new Socket(servidor, porta);
