@@ -17,7 +17,6 @@ public class ImplServidorCliente implements Runnable {
     public void run() {
         try (BufferedReader in = new BufferedReader(
                 new InputStreamReader(socketCliente.getInputStream()));
-             ObjectInputStream objIn = new ObjectInputStream(socketCliente.getInputStream());
              PrintWriter out = new PrintWriter(
                      socketCliente.getOutputStream(), true)) {
 
@@ -27,7 +26,8 @@ public class ImplServidorCliente implements Runnable {
             String clienteId = in.readLine();
             System.out.println("Cliente identificado: " + clienteId);
 
-            if (clienteId.equals("Central")){
+            if (clienteId == "Central") {
+                ObjectInputStream objIn = new ObjectInputStream(socketCliente.getInputStream());
                 Drone recebido = (Drone) objIn.readObject();
                 System.out.println("Drone recebido: " + recebido);
             }
