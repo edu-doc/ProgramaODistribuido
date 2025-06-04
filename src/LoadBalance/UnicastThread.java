@@ -25,8 +25,8 @@ public class UnicastThread implements Runnable {
             int minConexoes = Integer.MAX_VALUE; // Maior valor possivel dos inteiros, usado em comparação
 
             for (ServerInfo servidorCandidato : servidores) {
-                if (servidorCandidato.getConexoesAtivas() < minConexoes) {
-                    minConexoes = servidorCandidato.getConexoesAtivas();
+                if (servidorCandidato.getConexoesAtivas() + servidorCandidato.getPeso() < minConexoes) {
+                    minConexoes = servidorCandidato.getConexoesAtivas() + servidorCandidato.getPeso();
                     servidorEscolhido = servidorCandidato;
                 }
             }

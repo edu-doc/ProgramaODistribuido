@@ -8,11 +8,13 @@ public class ServerInfo {
     private final String host;
     private final int porta;
     private final AtomicInteger conexoesAtivas = new AtomicInteger(0); // Inicializado diretamente
+    private final int peso;
 
-    public ServerInfo(String id, String host, int porta) {
+    public ServerInfo(String id, String host, int porta, int peso) {
         this.id = id;
         this.host = host;
         this.porta = porta;
+        this.peso = peso;
     }
 
     public String getId() {
@@ -25,6 +27,10 @@ public class ServerInfo {
 
     public int getPorta() {
         return porta;
+    }
+
+    public int getPeso() {
+        return peso;
     }
 
     public int getConexoesAtivas() {

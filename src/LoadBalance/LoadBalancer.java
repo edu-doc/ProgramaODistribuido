@@ -14,8 +14,11 @@ public class LoadBalancer {
     public static void main(String[] args) throws IOException {
         CopyOnWriteArrayList<ServerInfo> servidores = new CopyOnWriteArrayList<>();
 
-        ServerInfo srvInfo1 = new ServerInfo("S1", "10.0.0.1", 12345);
-        ServerInfo srvInfo2 = new ServerInfo("S2", "10.0.0.2", 54321);
+        ServerInfo srvInfo1 = new ServerInfo("S1", "10.0.0.1", 12345, 3);
+        ServerInfo srvInfo2 = new ServerInfo("S2", "10.0.0.2", 54321, 1);
+
+        // ServerInfo srvInfo1 = new ServerInfo("S1", "10.0.0.1", 12345, 1);
+        // ServerInfo srvInfo2 = new ServerInfo("S2", "10.0.0.2", 54321, 1);
 
         servidores.add(srvInfo1);
         servidores.add(srvInfo2);
