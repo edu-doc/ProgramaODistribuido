@@ -1,4 +1,7 @@
-package Domain.Servidor;
+package Conexoes.Segundas;
+
+import Domain.Servidor.ImplServidor;
+import Domain.Servidor.ImplServidorCliente;
 
 import java.io.IOException;
 import java.net.*;

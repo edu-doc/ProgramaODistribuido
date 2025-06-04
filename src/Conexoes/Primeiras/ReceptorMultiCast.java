@@ -1,4 +1,4 @@
-package Conexoes.DroneCentrlMulti;
+package Conexoes.Primeiras;
 
 import API.DTO.DroneDTO;
 import Domain.Service.CentralService;

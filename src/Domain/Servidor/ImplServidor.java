@@ -7,7 +7,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicInteger;
 
-class ImplServidor implements Runnable {
+public class ImplServidor implements Runnable {
     private final String serverId;
 
     private String grupo = "224.0.0.10";

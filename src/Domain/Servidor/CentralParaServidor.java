@@ -1,54 +1,50 @@
-package Conexoes.ClienteServidorUni;
+package Domain.Servidor;
+
+import Domain.Model.Entity.Drone;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.List;
 
-public class ClienteParaServidor {
+public class CentralParaServidor {
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 22234;
     private static final int TIMEOUT = 5000;
 
-    public void conexaoCentralServidor() {
+    public void conexaoCentralServidor(Drone drone) {
         try (
                 Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedReader console = new BufferedReader(new InputStreamReader(System.in))
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
             socket.setSoTimeout(TIMEOUT);
 
-            System.out.println("Conectando ao Load Balancer na porta " + SERVER_PORT);
+            System.out.println("Conectando com Load Balancer na porta " + SERVER_PORT);
 
             String porta = in.readLine();
-
             System.out.println("Load Balancer retornou a porta: " + porta);
-
             int novaPorta = Integer.parseInt(porta);
 
             try (
                     Socket novoSocket = new Socket(SERVER_ADDRESS, novaPorta);
                     ObjectOutputStream objOut = new ObjectOutputStream(novoSocket.getOutputStream());
-                    ObjectInputStream objIn = new ObjectInputStream(novoSocket.getInputStream());
+                    ObjectInputStream objIn = new ObjectInputStream(novoSocket.getInputStream())
             ) {
                 novoSocket.setSoTimeout(TIMEOUT);
                 System.out.println("Redirecionado para o servidor na porta " + novaPorta);
 
-                objOut.writeUTF("Cliente");
+                // Identifica como Central e envia o drone
+                objOut.writeUTF("Central");
+                objOut.flush();
+                objOut.writeObject(drone);
                 objOut.flush();
 
-                Object resposta = objIn.readObject();
-                if (resposta instanceof List<?> lista) {
-                    System.out.println("Lista de drones recebida:");
-                    for (Object o : lista) {
-                        System.out.println(o); // Drone precisa ter toString() bem definido
-                    }
-                }
+                // Aguarda confirmação
+                String confirmacao = objIn.readUTF();
+                System.out.println("Resposta do servidor: " + confirmacao);
+
             } catch (IOException e) {
                 System.out.println("Erro ao conectar na nova porta: " + e.getMessage());
                 e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
             }
 
         } catch (IOException e) {
@@ -57,8 +53,4 @@ public class ClienteParaServidor {
         }
     }
 
-    public static void main(String[] args) {
-        new ClienteParaServidor().conexaoCentralServidor();
-    }
 }
-

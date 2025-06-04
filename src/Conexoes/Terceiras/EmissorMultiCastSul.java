@@ -1,14 +1,14 @@
-package Conexoes.DroneCentrlMulti;
+package Conexoes.Terceiras;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 
-public class EmissorMultiCastOeste {
+public class EmissorMultiCastSul {
 
     public static void main(String[] args) {
-        String apiUrl = "http://localhost:8080/api/sensores/dados/Oeste"; // URL da API
+        String apiUrl = "http://localhost:8080/api/sensores/dados/Sul"; // URL da API
         String multicastIp = "224.0.0.1";
         int porta = 55554;
 

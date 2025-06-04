@@ -1,7 +1,7 @@
 package Domain.Service;
 
 import API.DTO.DroneDTO;
-import Conexoes.CentralServidorUni.CentralParaServidor;
+import Domain.Servidor.CentralParaServidor;
 import Domain.Model.Entity.Drone;
 
 public class CentralService {

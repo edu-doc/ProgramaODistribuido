@@ -1,7 +1,7 @@
 package Domain.Model.Entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Drone implements Serializable {
@@ -15,7 +15,7 @@ public class Drone implements Serializable {
     private double latitude;
     private double longitude;
     private String posicao;
-    private LocalDateTime dataCriacao;
+    private LocalDate dataCriacao;
 
 
     public Drone(double pressao, double radiacao, double temperatura, double umidade, double latitude, double longitude, String posicao) {
@@ -27,8 +27,8 @@ public class Drone implements Serializable {
         setLatitude(latitude);
         setLongitude(longitude);
         setPosicao(posicao);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        setDataCriacao(LocalDateTime.parse(formatter.format(LocalDateTime.now()), formatter));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        setDataCriacao(LocalDate.parse(formatter.format(LocalDate.now()), formatter));
 
     }
 
@@ -99,11 +99,11 @@ public class Drone implements Serializable {
         this.longitude = longitude;
     }
 
-    public LocalDateTime getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(LocalDateTime dataCriacao) {
+    public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
