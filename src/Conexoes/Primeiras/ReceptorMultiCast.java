@@ -14,7 +14,7 @@ public class ReceptorMultiCast {
         String mensagem = "";
 
         MulticastSocket ms = new MulticastSocket(porta);
-        InetAddress multicastIP = InetAddress.getByName("224.0.0.1");
+        InetAddress multicastIP = InetAddress.getByName("224.0.0.18");
         InetSocketAddress grupo = new InetSocketAddress(multicastIP, porta);
         NetworkInterface interfaceRede = NetworkInterface.getByName("wireless_32768");
 

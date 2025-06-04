@@ -8,7 +8,6 @@ import java.net.Socket;
 public class CentralParaServidor {
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 22234;
-    private static final int TIMEOUT = 5000;
 
     public void conexaoCentralServidor(Drone drone) {
         try (
@@ -16,7 +15,6 @@ public class CentralParaServidor {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
-            socket.setSoTimeout(TIMEOUT);
 
             System.out.println("Conectando com Load Balancer na porta " + SERVER_PORT);
 
@@ -29,7 +27,6 @@ public class CentralParaServidor {
                     ObjectOutputStream objOut = new ObjectOutputStream(novoSocket.getOutputStream());
                     ObjectInputStream objIn = new ObjectInputStream(novoSocket.getInputStream())
             ) {
-                novoSocket.setSoTimeout(TIMEOUT);
                 System.out.println("Redirecionado para o servidor na porta " + novaPorta);
 
                 // Identifica como Central e envia o drone

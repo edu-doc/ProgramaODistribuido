@@ -12,7 +12,6 @@ import java.util.Scanner;
 public class ClienteParaServidor {
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 22234;
-    private static final int TIMEOUT = 30000; // 30 segundos
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public void conexaoCentralServidor() {
@@ -21,7 +20,6 @@ public class ClienteParaServidor {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
-            socket.setSoTimeout(TIMEOUT);
 
             System.out.println("Conectando ao Load Balancer na porta " + SERVER_PORT);
 
@@ -34,7 +32,6 @@ public class ClienteParaServidor {
                     ObjectOutputStream objOut = new ObjectOutputStream(novoSocket.getOutputStream());
                     ObjectInputStream objIn = new ObjectInputStream(novoSocket.getInputStream())
             ) {
-                novoSocket.setSoTimeout(TIMEOUT);
                 System.out.println("Redirecionado para o servidor na porta " + novaPorta);
 
                 // Identifica como Cliente
@@ -55,7 +52,7 @@ public class ClienteParaServidor {
 
                     // Envia a opção escolhida
                     objOut.writeInt(opcao);
-                    objOut.flush();
+
 
                     if (opcao != 0) {
                         try {

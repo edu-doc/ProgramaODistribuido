@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServidorZeus {
     private static final int PORT = 12345;
-    private static final int MAX_THREADS = 10;
+    private static final int MAX_THREADS = 100;
     private static final int TIMEOUT = 30000; // 30 segundos
     public static final AtomicInteger conexoesAtivas = new AtomicInteger(0);
 

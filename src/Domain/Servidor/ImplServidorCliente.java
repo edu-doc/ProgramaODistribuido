@@ -6,7 +6,6 @@ import java.net.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ImplServidorCliente implements Runnable {
@@ -16,7 +15,6 @@ public class ImplServidorCliente implements Runnable {
     private static final String HOST = "localhost";
     private static final int PORTA_RMI = 1099;
     private static final String NOME_SERVICO = "Banco";
-    private static final int TIMEOUT = 30000; // 30 segundos
 
     public static AtomicInteger conexoesAtivas = null;
 
@@ -53,7 +51,6 @@ public class ImplServidorCliente implements Runnable {
     @Override
     public void run() {
         try {
-            socketCliente.setSoTimeout(TIMEOUT);
             
             // Cria o output primeiro
             ObjectOutputStream objOut = new ObjectOutputStream(socketCliente.getOutputStream());

@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ServidorOdin {
 
     private static final int PORT = 54321;
-    private static final int MAX_THREADS = 10;
+    private static final int MAX_THREADS = 100;
     public static final AtomicInteger conexoesAtivas = new AtomicInteger(0);
 
 
