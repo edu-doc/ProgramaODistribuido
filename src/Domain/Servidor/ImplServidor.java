@@ -5,34 +5,33 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class ImplServidor implements Runnable {
     private final String serverId;
 
-    private final int porta;
+    private String grupo = "224.0.0.10";
+    private final int porta = 55560;
     private DatagramSocket emisorSocket; // Socket para enviar
-    private String grupo;
 
-    private static int conexoesAtivas = 0;
-    private boolean rodando = true;
+    public static AtomicInteger conexoesAtivas = null;
+    private boolean operacaoEnvio;
 
-
-    public ImplServidor(String serverId, String grupo, int porta) throws IOException {
+    public ImplServidor(String serverId, boolean operacaoEnvio , AtomicInteger conexoesAtivas) throws IOException {
         this.serverId = serverId;
-        this.porta = porta;
-        this.grupo = grupo;
         this.emisorSocket = new DatagramSocket();
-        enviarAtualizacao(); // Envia estado inicial (0 conexões)
+        this.operacaoEnvio = operacaoEnvio;
+        this.conexoesAtivas = conexoesAtivas;
     }
 
-    public void simularNovaConexao() {
-        conexoesAtivas++;
+    public void NovaConexao() {
+        conexoesAtivas.incrementAndGet();
         enviarAtualizacao();
     }
 
-    public void simularConexaoFechada() {
-        if (conexoesAtivas > 0) {
-            conexoesAtivas--;
+    public void ConexaoFechada() {
+        if (conexoesAtivas.get() > 0) {
+            conexoesAtivas.decrementAndGet();;
         }
         enviarAtualizacao();
     }
@@ -57,20 +56,12 @@ class ImplServidor implements Runnable {
 
     @Override
     public void run() {
-        while (rodando) {
-            try {
-                // Apenas para simular algo, envia a cada 5 segundos:
-                simularNovaConexao();
-                simularNovaConexao();
-                simularNovaConexao();
-                Thread.sleep(5000);
-                simularConexaoFechada();
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                System.out.println("Servidor interrompido.");
-                rodando = false;
-            }
+        if (operacaoEnvio) {
+            NovaConexao();
+        } else {
+            ConexaoFechada();
         }
+        
         close();
     }
 }

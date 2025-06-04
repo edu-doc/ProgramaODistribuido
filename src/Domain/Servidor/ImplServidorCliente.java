@@ -4,16 +4,35 @@ import Domain.Model.Entity.Drone;
 import Domain.Service.ServidorService;
 
 import java.io.*;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
+import java.net.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ImplServidorCliente implements Runnable {
     private final Socket socketCliente;
     private ServidorService servidorService = new ServidorService();
 
-    public ImplServidorCliente(Socket socket) {
+
+    public static AtomicInteger conexoesAtivas = null;
+    private final String serverId;
+
+    public ImplServidorCliente(String serverId, AtomicInteger conexoesAtivas ,Socket socket) {
         this.socketCliente = socket;
+        this.serverId = serverId;
+        this.conexoesAtivas = conexoesAtivas;
     }
+
+    private void enviarAtualizacao() {
+        String mensagem = serverId + ":" + conexoesAtivas.decrementAndGet();
+        try (MulticastSocket emisorSocket = new MulticastSocket()){
+            byte[] bufferEnvio = mensagem.getBytes();
+            DatagramPacket pacoteEnvio = new DatagramPacket(bufferEnvio, bufferEnvio.length, InetAddress.getByName("224.0.0.10"), 55560);
+            emisorSocket.send(pacoteEnvio);
+            System.out.println("SIMULADOR [" + serverId + "]: Enviou atualização -> " + mensagem);
+        } catch (IOException e) {
+            System.err.println("SIMULADOR [" + serverId + "]: Erro ao enviar atualização multicast: " + e.getMessage());
+        }
+    }
+
 
     @Override
     public void run() {
@@ -54,6 +73,7 @@ public class ImplServidorCliente implements Runnable {
             } catch (IOException e) {
                 System.err.println("Erro ao fechar socket: " + e.getMessage());
             }
+            enviarAtualizacao();
         }
     }
 }
