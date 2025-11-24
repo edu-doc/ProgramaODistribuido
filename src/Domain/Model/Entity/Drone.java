@@ -8,25 +8,48 @@ public class Drone implements Serializable {
 
     private static int count = 0;
     private int id;
-    private double pressao;
-    private double radiacao;
+
+    // Novos campos de poluentes e partículas
+    private double co2;
+    private double co;
+    private double no2;
+    private double so2;
+    private double pm2_5;
+    private double pm10;
+
+    // Campos existentes
     private double temperatura;
     private double umidade;
+    private double ruido;
+    private double radiacao;
     private double latitude;
     private double longitude;
     private String posicao;
     private LocalDate dataCriacao;
 
 
-    public Drone(double pressao, double radiacao, double temperatura, double umidade, double latitude, double longitude, String posicao) {
+    public Drone(double co2, double co, double no2, double so2,
+                 double pm2_5, double pm10, double temperatura, double umidade,
+                 double ruido, double radiacao, double latitude, double longitude,
+                 String posicao) {
+
         setId(getNextId());
-        setPressao(pressao);
-        setRadiacao(radiacao);
+
+        setCo2(co2);
+        setCo(co);
+        setNo2(no2);
+        setSo2(so2);
+        setPm2_5(pm2_5);
+        setPm10(pm10);
+
         setTemperatura(temperatura);
         setUmidade(umidade);
+        setRuido(ruido);
+        setRadiacao(radiacao);
         setLatitude(latitude);
         setLongitude(longitude);
         setPosicao(posicao);
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         setDataCriacao(LocalDate.parse(formatter.format(LocalDate.now()), formatter));
 
@@ -51,12 +74,60 @@ public class Drone implements Serializable {
         this.posicao = posicao;
     }
 
-    public double getPressao() {
-        return pressao;
+    public double getCo2() {
+        return co2;
     }
 
-    public void setPressao(double pressao) {
-        this.pressao = pressao;
+    public void setCo2(double co2) {
+        this.co2 = co2;
+    }
+
+    public double getCo() {
+        return co;
+    }
+
+    public void setCo(double co) {
+        this.co = co;
+    }
+
+    public double getNo2() {
+        return no2;
+    }
+
+    public void setNo2(double no2) {
+        this.no2 = no2;
+    }
+
+    public double getSo2() {
+        return so2;
+    }
+
+    public void setSo2(double so2) {
+        this.so2 = so2;
+    }
+
+    public double getPm2_5() {
+        return pm2_5;
+    }
+
+    public void setPm2_5(double pm2_5) {
+        this.pm2_5 = pm2_5;
+    }
+
+    public double getPm10() {
+        return pm10;
+    }
+
+    public void setPm10(double pm10) {
+        this.pm10 = pm10;
+    }
+
+    public double getRuido() {
+        return ruido;
+    }
+
+    public void setRuido(double ruido) {
+        this.ruido = ruido;
     }
 
     public double getRadiacao() {
@@ -110,10 +181,17 @@ public class Drone implements Serializable {
     @Override
     public String toString() {
         return "Drone{" +
-                "pressao=" + pressao +
-                ", radiacao=" + radiacao +
+                "id=" + id +
+                ", co2=" + co2 +
+                ", co=" + co +
+                ", no2=" + no2 +
+                ", so2=" + so2 +
+                ", pm2_5=" + pm2_5 +
+                ", pm10=" + pm10 +
                 ", temperatura=" + temperatura +
                 ", umidade=" + umidade +
+                ", ruido=" + ruido +
+                ", radiacao=" + radiacao +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 ", posicao='" + posicao + '\'' +
